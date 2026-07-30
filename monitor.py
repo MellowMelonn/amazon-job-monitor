@@ -23,7 +23,6 @@ for url in URLS:
 
         soup = BeautifulSoup(response.text, "html.parser")
 
-        # Collect text that may contain job listings
         for item in soup.find_all(["a", "div", "span", "h2", "h3"]):
             text = item.get_text(" ", strip=True)
 
@@ -50,10 +49,34 @@ else:
 
 new_jobs = current_jobs - old_jobs
 
+
 if new_jobs:
     print("NEW AMAZON JOBS FOUND:")
+
+    email_body = "New Amazon Las Vegas warehouse jobs found:\n\n"
+
     for job in new_jobs:
         print("-", job)
+        email_body += f"- {job}\n"
+
+    resend_key = os.environ.get("RESEND_API_KEY")
+    alert_email = os.environ.get("ALERT_EMAIL")
+
+    if resend_key and alert_email:
+        requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {resend_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "from": "onboarding@resend.dev",
+                "to": alert_email,
+                "subject": "New Amazon Las Vegas Warehouse Job Found!",
+                "text": email_body
+            }
+        )
+
 else:
     print("No new jobs found.")
 
