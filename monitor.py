@@ -47,7 +47,7 @@ else:
     old_jobs = set()
 
 
-new_jobs = current_jobs - old_jobs
+new_jobs = current_jobs
 
 
 if new_jobs:
