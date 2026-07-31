@@ -64,7 +64,10 @@ else:
 
 old_ids = {job["id"] for job in old_jobs}
 
-new_jobs = matches
+new_jobs = [
+    job for job in matches
+    if job["id"] not in old_ids
+]
 
 
 print("Current Las Vegas warehouse jobs:", len(matches))
@@ -77,12 +80,16 @@ for job in new_jobs:
     print(job["location"])
 
 print("EMAIL TEST")
-if True:
+if new_jobs:
     resend_key = os.environ.get("RESEND_API_KEY", "").strip()
     alert_email = os.environ.get("ALERT_EMAIL")
 
-    message = "Amazon monitor email test is working.\n\n"
-    message += "Test message from GitHub Actions."
+    message = "New Amazon Las Vegas warehouse jobs found:\n\n"
+    for job in new_jobs:
+    message += (
+        f"{job['title']}\n"
+        f"{job['location']}\n\n"
+    )
 
     if resend_key and alert_email:
         requests.post(
