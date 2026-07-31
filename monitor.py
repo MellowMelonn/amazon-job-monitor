@@ -1,7 +1,10 @@
 import requests
-import re
+import json
+import os
 
 URL = "https://www.amazon.jobs/en/search.json"
+
+STATE_FILE = "jobs_seen.json"
 
 headers = {
     "User-Agent": "Mozilla/5.0"
@@ -20,8 +23,6 @@ data = response.json()
 
 jobs = data.get("jobs", [])
 
-print("Total jobs returned:", len(jobs))
-
 matches = []
 
 for job in jobs:
@@ -30,7 +31,6 @@ for job in jobs:
 
     location_lower = location.lower()
 
-    # Only accept actual Nevada locations
     is_nevada = (
         "las vegas" in location_lower
         or "north las vegas" in location_lower
@@ -48,12 +48,37 @@ for job in jobs:
     ])
 
     if is_nevada and is_warehouse:
-        matches.append(job)
+        matches.append({
+            "id": job.get("id"),
+            "title": title,
+            "location": location
+        })
 
-print("Las Vegas warehouse matches:", len(matches))
 
-for job in matches:
-    print("---")
-    print("TITLE:", job.get("title"))
-    print("LOCATION:", job.get("location"))
-    print("ID:", job.get("id"))
+if os.path.exists(STATE_FILE):
+    with open(STATE_FILE, "r") as f:
+        old_jobs = json.load(f)
+else:
+    old_jobs = []
+
+
+old_ids = {job["id"] for job in old_jobs}
+
+new_jobs = [
+    job for job in matches
+    if job["id"] not in old_ids
+]
+
+
+print("Current Las Vegas warehouse jobs:", len(matches))
+print("New jobs:", len(new_jobs))
+
+
+for job in new_jobs:
+    print("NEW:")
+    print(job["title"])
+    print(job["location"])
+
+
+with open(STATE_FILE, "w") as f:
+    json.dump(matches, f, indent=2)
