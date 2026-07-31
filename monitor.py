@@ -80,5 +80,33 @@ for job in new_jobs:
     print(job["location"])
 
 
+if new_jobs:
+    resend_key = os.environ.get("RESEND_API_KEY")
+    alert_email = os.environ.get("ALERT_EMAIL")
+
+    message = "New Amazon Las Vegas warehouse jobs found:\n\n"
+
+    for job in new_jobs:
+        message += (
+            f"{job['title']}\n"
+            f"{job['location']}\n\n"
+        )
+
+    if resend_key and alert_email:
+        requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {resend_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "from": "onboarding@resend.dev",
+                "to": alert_email,
+                "subject": "New Amazon Las Vegas Warehouse Job",
+                "text": message
+            }
+        )
+
+
 with open(STATE_FILE, "w") as f:
     json.dump(matches, f, indent=2)
