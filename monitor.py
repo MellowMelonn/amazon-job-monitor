@@ -93,7 +93,7 @@ for job in new_jobs:
     print(job["title"])
     print(job["location"])
 
-print("EMAIL TEST")
+
 if new_jobs:
     resend_key = os.environ.get("RESEND_API_KEY", "").strip()
     alert_email = os.environ.get("ALERT_EMAIL")
@@ -101,11 +101,11 @@ if new_jobs:
     message = "New Amazon Las Vegas warehouse jobs found:\n\n"
 
     for job in new_jobs:
-        message += (
-    f"{job['title']}\n"
-    f"{job['location']}\n"
-    f"{job.get('url', 'No link available')}\n\n"
-)
+    message += (
+        f"{job['title']}\n"
+        f"{job['location']}\n"
+        f"{job.get('url', 'No link available')}\n\n"
+    )
 
     if resend_key and alert_email:
         requests.post(
