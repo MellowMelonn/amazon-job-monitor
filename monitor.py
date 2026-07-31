@@ -49,10 +49,11 @@ for job in jobs:
 
     if is_nevada and is_warehouse:
         matches.append({
-            "id": job.get("id"),
-            "title": title,
-            "location": location
-        })
+    "id": job.get("id"),
+    "title": title,
+    "location": location,
+    "url": job.get("url")
+})
 
 
 if os.path.exists(STATE_FILE):
@@ -88,9 +89,10 @@ if new_jobs:
 
     for job in new_jobs:
         message += (
-            f"{job['title']}\n"
-            f"{job['location']}\n\n"
-        )
+    f"{job['title']}\n"
+    f"{job['location']}\n"
+    f"{job.get('url', 'No link available')}\n\n"
+)
 
     if resend_key and alert_email:
         requests.post(
