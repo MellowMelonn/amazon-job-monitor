@@ -23,9 +23,11 @@ jobs:
 
       - name: Install dependencies
         run: pip install requests beautifulsoup4
-
-      - name: Run Amazon monitor
-        run: python monitor.py
+- name: Run Amazon monitor
+  env:
+    RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+    ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+  run: python monitor.py
 
       - name: Save job history
         run: |
