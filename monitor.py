@@ -1,4 +1,5 @@
 import requests
+import re
 
 URL = "https://www.amazon.jobs/en/search.json"
 
@@ -27,24 +28,26 @@ for job in jobs:
     title = job.get("title", "")
     location = job.get("location", "")
 
-    combined = f"{title} {location}".lower()
+    location_lower = location.lower()
 
-    if (
-        any(place in combined for place in [
-            "las vegas",
-            "north las vegas",
-            "nv",
-            "nevada"
-        ])
-        and
-        any(word in combined for word in [
-            "warehouse",
-            "fulfillment",
-            "associate",
-            "sortation",
-            "delivery station"
-        ])
-    ):
+    # Only accept actual Nevada locations
+    is_nevada = (
+        "las vegas" in location_lower
+        or "north las vegas" in location_lower
+        or "nv," in location_lower
+        or ", nv" in location_lower
+        or "nevada" in location_lower
+    )
+
+    is_warehouse = any(word in title.lower() for word in [
+        "warehouse",
+        "fulfillment",
+        "sortation",
+        "delivery station",
+        "associate"
+    ])
+
+    if is_nevada and is_warehouse:
         matches.append(job)
 
 print("Las Vegas warehouse matches:", len(matches))
