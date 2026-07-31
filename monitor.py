@@ -64,10 +64,7 @@ else:
 
 old_ids = {job["id"] for job in old_jobs}
 
-new_jobs = [
-    job for job in matches
-    if job["id"] not in old_ids
-]
+new_jobs = matches
 
 
 print("Current Las Vegas warehouse jobs:", len(matches))
