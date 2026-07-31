@@ -11,7 +11,7 @@ headers = {
 }
 
 params = {
-    "base_query": "warehouse associate",
+    "base_query": "warehouse fulfillment associate",
     "result_limit": 100
 }
 
@@ -40,12 +40,23 @@ for job in jobs:
     )
 
     is_warehouse = any(word in title.lower() for word in [
-        "warehouse",
-        "fulfillment",
-        "sortation",
-        "delivery station",
-        "associate"
-    ])
+    "warehouse",
+    "fulfillment",
+    "fulfilment",
+    "sortation",
+    "delivery station",
+    "delivery",
+    "distribution",
+    "inventory",
+    "picker",
+    "packer",
+    "stower",
+    "ship dock",
+    "dock",
+    "associate",
+    "seasonal",
+    "operations"
+])
 
     if is_nevada and is_warehouse:
         job_id = job.get("id")
