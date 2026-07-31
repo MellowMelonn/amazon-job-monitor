@@ -25,10 +25,10 @@ jobs:
         run: pip install requests
 
       - name: Run monitor
-  env:
-    RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}"
-    ALERT_EMAIL: "${{ secrets.ALERT_EMAIL }}"
-  run: python monitor.py
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+        run: python monitor.py
 
       - name: Save job history
         run: |
