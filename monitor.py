@@ -1,24 +1,39 @@
 import requests
-import json
 
-URL = "https://www.amazon.jobs/en/search.json?base_query=&loc_query=Las%20Vegas%2C%20NV"
+SEARCHES = [
+    "Las Vegas, NV",
+    "North Las Vegas, NV"
+]
 
 headers = {
     "User-Agent": "Mozilla/5.0"
 }
 
-response = requests.get(URL, headers=headers, timeout=30)
+for location in SEARCHES:
+    url = (
+        "https://www.amazon.jobs/en/search.json"
+        f"?base_query=warehouse"
+        f"&loc_query={location.replace(' ', '%20')}"
+    )
 
-print("Status code:", response.status_code)
+    print("\nSearching:", location)
 
-data = response.json()
+    response = requests.get(url, headers=headers, timeout=30)
 
-jobs = data.get("jobs", [])
+    print("Status code:", response.status_code)
 
-print("Jobs found:", len(jobs))
+    data = response.json()
 
-for job in jobs[:10]:
-    print(job.get("title"))
-    print(job.get("location"))
-    print(job.get("url"))
-    print("---")
+    jobs = data.get("jobs", [])
+
+    print("Jobs found:", len(jobs))
+
+    for job in jobs[:10]:
+        title = job.get("title")
+        loc = job.get("location")
+        job_id = job.get("id")
+
+        print("---")
+        print(title)
+        print(loc)
+        print("ID:", job_id)
