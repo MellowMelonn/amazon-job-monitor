@@ -78,7 +78,7 @@ for job in new_jobs:
 
 print("EMAIL TEST")
 if True:
-    resend_key = os.environ.get("RESEND_API_KEY")
+    resend_key = os.environ.get("RESEND_API_KEY", "").strip()
     alert_email = os.environ.get("ALERT_EMAIL")
 
     message = "Amazon monitor email test is working.\n\n"
