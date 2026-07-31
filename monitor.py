@@ -8,8 +8,7 @@ headers = {
 
 params = {
     "base_query": "warehouse associate",
-    "loc_query": "Las Vegas Nevada",
-    "result_limit": 50
+    "result_limit": 100
 }
 
 response = requests.get(URL, headers=headers, params=params, timeout=30)
@@ -22,7 +21,7 @@ jobs = data.get("jobs", [])
 
 print("Total jobs returned:", len(jobs))
 
-found = 0
+matches = []
 
 for job in jobs:
     title = job.get("title", "")
@@ -31,7 +30,12 @@ for job in jobs:
     combined = f"{title} {location}".lower()
 
     if (
-        ("nv" in combined or "nevada" in combined or "las vegas" in combined)
+        any(place in combined for place in [
+            "las vegas",
+            "north las vegas",
+            "nv",
+            "nevada"
+        ])
         and
         any(word in combined for word in [
             "warehouse",
@@ -41,10 +45,12 @@ for job in jobs:
             "delivery station"
         ])
     ):
-        found += 1
-        print("---")
-        print("TITLE:", title)
-        print("LOCATION:", location)
-        print("ID:", job.get("id"))
+        matches.append(job)
 
-print("Matching Las Vegas warehouse jobs:", found)
+print("Las Vegas warehouse matches:", len(matches))
+
+for job in matches:
+    print("---")
+    print("TITLE:", job.get("title"))
+    print("LOCATION:", job.get("location"))
+    print("ID:", job.get("id"))
