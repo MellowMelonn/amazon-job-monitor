@@ -48,11 +48,13 @@ for job in jobs:
     ])
 
     if is_nevada and is_warehouse:
-        matches.append({
-    "id": job.get("id"),
+        job_id = job.get("id")
+
+matches.append({
+    "id": job_id,
     "title": title,
     "location": location,
-    "url": job.get("url")
+    "url": f"https://www.amazon.jobs/en/jobs/{job_id}"
 })
 
 
