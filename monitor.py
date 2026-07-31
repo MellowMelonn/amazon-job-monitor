@@ -47,7 +47,7 @@ for job in jobs:
         "associate"
     ])
 
-        if is_nevada and is_warehouse:
+    if is_nevada and is_warehouse:
         job_id = job.get("id")
 
         matches.append({
