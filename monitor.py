@@ -85,11 +85,12 @@ if new_jobs:
     alert_email = os.environ.get("ALERT_EMAIL")
 
     message = "New Amazon Las Vegas warehouse jobs found:\n\n"
+
     for job in new_jobs:
-    message += (
-        f"{job['title']}\n"
-        f"{job['location']}\n\n"
-    )
+        message += (
+            f"{job['title']}\n"
+            f"{job['location']}\n\n"
+        )
 
     if resend_key and alert_email:
         requests.post(
