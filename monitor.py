@@ -1,39 +1,50 @@
 import requests
 
-SEARCHES = [
-    "Las Vegas, NV",
-    "North Las Vegas, NV"
-]
+URL = "https://www.amazon.jobs/en/search.json"
 
 headers = {
     "User-Agent": "Mozilla/5.0"
 }
 
-for location in SEARCHES:
-    url = (
-        "https://www.amazon.jobs/en/search.json"
-        f"?base_query=warehouse"
-        f"&loc_query={location.replace(' ', '%20')}"
-    )
+params = {
+    "base_query": "warehouse associate",
+    "loc_query": "Las Vegas Nevada",
+    "result_limit": 50
+}
 
-    print("\nSearching:", location)
+response = requests.get(URL, headers=headers, params=params, timeout=30)
 
-    response = requests.get(url, headers=headers, timeout=30)
+print("Status code:", response.status_code)
 
-    print("Status code:", response.status_code)
+data = response.json()
 
-    data = response.json()
+jobs = data.get("jobs", [])
 
-    jobs = data.get("jobs", [])
+print("Total jobs returned:", len(jobs))
 
-    print("Jobs found:", len(jobs))
+found = 0
 
-    for job in jobs[:10]:
-        title = job.get("title")
-        loc = job.get("location")
-        job_id = job.get("id")
+for job in jobs:
+    title = job.get("title", "")
+    location = job.get("location", "")
 
+    combined = f"{title} {location}".lower()
+
+    if (
+        ("nv" in combined or "nevada" in combined or "las vegas" in combined)
+        and
+        any(word in combined for word in [
+            "warehouse",
+            "fulfillment",
+            "associate",
+            "sortation",
+            "delivery station"
+        ])
+    ):
+        found += 1
         print("---")
-        print(title)
-        print(loc)
-        print("ID:", job_id)
+        print("TITLE:", title)
+        print("LOCATION:", location)
+        print("ID:", job.get("id"))
+
+print("Matching Las Vegas warehouse jobs:", found)
